@@ -46,7 +46,6 @@
         </label>
         <input type="text" id="city" name="city" ng-class="{'input-field-mobile':$root.isMobile}"
                v-model="city"
-               :value="city"
                v-validate="{ rules: { required: true, min:3, max:50 ,regex:/^[\sA-Za-z]+$/}}"
                required minlength="3" maxlength="50" ng-blur="ctrl.form.city.$dirty=true; ctrl.form.$dirty=true; ctrl.showMessage=false;" aria-label=" " class="form-control "/>
         <p v-if="errors.has('city')" class="error">{{ errors.first('city') }}</p>
@@ -61,7 +60,7 @@
         <div>
           <select class="selectBox dropdown-toggle" id="province" name="province" ng-class="{'input-field-mobile':$root.isMobile}"
                   v-model="province" ng-change="ctrl.getProvince(ctrl.addressInfo.address.province); ctrl.form.$dirty=true; ctrl.showMessage=false;" ng-options="province.provinceName for province in ctrl.provinces track by province.provinceId" required auto-complete-state="zipcode">
-            <option v-for="p in allProvinces" ng-value="p">{{p.provinceName}}</option>
+            <option v-for="p in allProvinces" v-bind:value="p.provinceId">{{p.provinceName}}</option>
           </select>
         </div>
         <p v-if="errors.has('province')" class="error">{{ errors.first('province') }}</p>
@@ -115,18 +114,82 @@
     },
     data () {
       return {
-        address1: this.$store.state.address.address1,
+        /* address1: this.$store.state.address.address1,
         address2: this.$store.state.address.address2,
         city: this.$store.state.address.city,
         province: this.$store.state.address.province,
         zipcode: this.$store.state.address.zipcode,
         countryCode: this.$store.state.address.countryCode,
-        terms: this.$store.state.address.terms
+        terms: this.$store.state.address.terms */
       }
     },
-    computed: mapGetters([
+    /* mapGetters([
       'allProvinces'
-    ]),
+    ]), */
+    computed: {
+      ...mapGetters([
+        'allProvinces'
+      ]),
+      /* allProvinces: {
+        get () {
+          return this.$store.getters.allProvinces
+        }
+      }, */
+      address1: {
+        get () {
+          return this.$store.state.address.address1
+        },
+        set (value) {
+          console.log('In set of address1' + value)
+          this.$store.dispatch('updateAddress1', value)
+        }
+      },
+      address2: {
+        get () {
+          return this.$store.state.address.address2
+        },
+        set (value) {
+          console.log('In set of address2' + value)
+          this.$store.dispatch('updateAddress2', value)
+        }
+      },
+      city: {
+        get () {
+          return this.$store.state.address.city
+        },
+        set (value) {
+          console.log('In set of city' + value)
+          this.$store.dispatch('updateCity', value)
+        }
+      },
+      province: {
+        get () {
+          return this.$store.state.address.province
+        },
+        set (value) {
+          console.log('In set of province' + value)
+          this.$store.dispatch('updateState', value)
+        }
+      },
+      zipcode: {
+        get () {
+          return this.$store.state.address.zipcode
+        },
+        set (value) {
+          console.log('In set of zipcode' + value)
+          this.$store.dispatch('updateZip', value)
+        }
+      },
+      terms: {
+        get () {
+          return this.$store.state.address.terms
+        },
+        set (value) {
+          console.log('In set of terms' + value)
+          this.$store.dispatch('updateTerms', value)
+        }
+      }
+    },
     methods: {
       reverseMessage: function () {
         this.msg = this.msg.split('').reverse().join('')

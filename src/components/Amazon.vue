@@ -67,8 +67,8 @@
                        ng-class="{'input-field-mobile':$root.isMobile}"
                        v-model="lastName"
                        v-validate="{ rules: { required: true, min:2 ,regex: /^[a-zA-Z0-9 \'\.\,\-]*$/   } }"
-                       ng-blur="ctrl.contactForm.lastName.$dirty=true;" maxlength="50" minlength="2"
-                       class="form-control "/>
+                       ng-blur="ctrl.contactForm.lastName.$dirty=true;" maxlength="50"
+                       class="form-control ">
 
                 <p v-if="errors.has('lastName')" class="error">{{ errors.first('lastName') }}</p>
                 <!-- </md-input-container> -->
@@ -165,6 +165,7 @@
 <script>
   import { ErrorBag } from 'vee-validate'
   import ServiceAddress from './ServiceAddress'
+  import * as types from '../store/mutation-types'
   import { EventBus } from './event-bus'
   // import { UniqueUserNameDirective } from './UniqueUserNameDirective'
   // import VeeValidate from 'vee-validate'
@@ -214,14 +215,42 @@
     },
     data () {
       return {
-        firstName: this.$store.state.personalinfo.firstName,
+        /* firstName: this.$store.state.personalinfo.firstName,
         lastName: this.$store.state.personalinfo.lastName,
         email: this.$store.state.personalinfo.email,
-        phoneNumber: this.$store.state.personalinfo.phone
+        phoneNumber: this.$store.state.personalinfo.phone */
       }
     },
     computed: {
-
+      firstName: {
+        get () { return this.$store.state.personalinfo.firstName },
+        set (value) {
+          console.log('In set of firstName' + value)
+          this.$store.dispatch(types.SET_FIRST_NAME, value)
+        }
+      },
+      lastName: {
+        get () { return this.$store.state.personalinfo.lastName },
+        set (value) {
+          console.log('In set of lastName' + value)
+          // this.$store.commit(types.UPDATE_LAST_NAME, value)
+          this.$store.dispatch(types.SET_LAST_NAME, value)
+        }
+      },
+      email: {
+        get () { return this.$store.state.personalinfo.email },
+        set (value) {
+          console.log('In set of Email' + value)
+          this.$store.dispatch(types.SET_EMAIL, value)
+        }
+      },
+      phoneNumber: {
+        get () { return this.$store.state.personalinfo.phone },
+        set (value) {
+          console.log('In set of Phone' + value)
+          this.$store.dispatch(types.SET_PHONE, value)
+        }
+      }
     },
     methods: {
       reverseMessage: function () {
@@ -243,7 +272,10 @@
           }
         })
         EventBus.$emit('validate_all')
-        console.log(this.$store.state.personalinfo.terms)
+        console.log('terms' + this.$store.state.address.terms)
+        console.log('fname' + this.$store.state.personalinfo.firstName)
+        console.log('lname' + this.$store.state.personalinfo.lastName)
+        console.log('address1' + this.$store.state.address.address1)
       }
     },
     created: function () {
