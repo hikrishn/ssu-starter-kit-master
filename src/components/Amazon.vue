@@ -105,9 +105,8 @@
                   <!-- {{::'contact.email' |
                   message}} angul--></label>
                 <input type="email" id="email" name="email" v-model="email"
-                       unique-username
                        ng-class="{'input-field-mobile':$root.isMobile}"
-                       v-validate="{ rules: { required: true, min:7, max:80 ,regex:/^[a-zA-Z]+[a-zA-Z0-9\.\_\-\]+@[a-zA-Z]+[a-zA-Z0-9\-\]+\.[a-zA-Z.]{2,5}$/ , uniqueemail:true }}"
+                       v-validate="{ rules: { required: true, min:7, max:80, email: true, regex:/^[a-zA-Z]+[a-zA-Z0-9\.\_\-\]+@[a-zA-Z]+[a-zA-Z0-9\-\]+\.[a-zA-Z.]{2,5}$/, uniqueemail:true }}"
                        minlength="7" maxlength="80" aria-label=" "
                        ng-blur="ctrl.contactForm.email.$dirty=true;" required
                        class="form-control "/>

@@ -71,9 +71,13 @@ VeeValidate.Validator.extend('poapopattern', {
       var poBoxPattern = new RegExp('((\\w*\\s)*P\\s?\\.?\\s?O\\s?\\.?)?\\s*BOX($|\\W)', 'i')
       var apoPattern = new RegExp('(^|\\W+)(A|F)\\s?\\.?\\s?P\\s?\\.?\\s?O(\\W+|$)', 'i')
       if (!value || (poBoxPattern.exec(value) === null && apoPattern.exec(value) === null)) {
-        resolve(true)
+        resolve({
+          valid: true
+        })
       } else {
-        reject(false)
+        resolve({
+          valid: false
+        })
       }
     })
   }
@@ -91,10 +95,14 @@ VeeValidate.Validator.extend('uniqueemail', {
        }) */
       axios.get(`/ssu-api/api/selfSignUp/validateUser?userName=${value}`).then(response => {
         console.log('checking if user is unique' + response.data)
-        if (response.data === false) {
-          resolve(response)
+        if (response.data === true) {
+          resolve({
+            valid: true
+          })
         } else {
-          reject(response)
+          resolve({
+            valid: false
+          })
         }
       })
       .catch(function (error) {
