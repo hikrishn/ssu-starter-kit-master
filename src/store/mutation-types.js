@@ -16,6 +16,7 @@ export const SET_FIRST_NAME = 'SET_FIRST_NAME'
 export const SET_LAST_NAME = 'SET_LAST_NAME'
 export const SET_EMAIL = 'SET_EMAIL'
 export const SET_PHONE = 'SET_PHONE'
+export const SET_CITY_STATE = 'SET_CITY_STATE'
 
 export const UPDATE_ADDR1 = 'UPDATE_ADDR1'
 export const UPDATE_ADDR2 = 'UPDATE_ADDR2'

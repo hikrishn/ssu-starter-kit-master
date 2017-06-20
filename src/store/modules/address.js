@@ -41,17 +41,22 @@ const actions = {
   updateTerms ({commit}, value) {
     console.log('in updateTerms action' + value)
     commit(types.UPDATE_TERMS, value)
+  },
+  [types.SET_CITY_STATE] ({commit}, value) {
+    console.log('in set City State action' + value)
+    postalCodeLookupService.getCityAndState(value, cityAndState => {
+      console.log('in set City State action - ' + cityAndState)
+      commit(types.UPDATE_CITY_STATE, cityAndState)
+    })
   }
 }
 
 // mutations
 const mutations = {
   [types.UPDATE_CITY_STATE] (state, value) {
-    postalCodeLookupService.getCityAndState(value, cityAndState => {
-      console.log('in updatecitystate' + cityAndState)
-      state.city = cityAndState.city
-      state.province = cityAndState.state
-    })
+    console.log('in UPDATE_CITY_STATE' + value.city + '-' + value.state)
+    state.city = value.city
+    state.province = value.state
     // console.log('in mutation updatecitystate' + state.city)
     // state.city = 'SOUTH AMBOY'
     // console.log('in mutation updatecitystate1' + state.province)

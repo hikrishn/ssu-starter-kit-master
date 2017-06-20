@@ -202,7 +202,7 @@
         }
       },
       updatecitystates: function (event) {
-        this.$store.commit(types.UPDATE_CITY_STATE, event.target.value)
+        this.$store.dispatch(types.SET_CITY_STATE, event.target.value)
       }
     },
     created: function () {
