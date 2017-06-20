@@ -45,6 +45,13 @@ module.exports = {
           '/ssu-api': ''
         }
       },
+      '/unifiedServicesAVS': {
+        target: 'https://qafat2-apigateway.qa.vonagenetworks.net/unifiedServicesAVS',
+        changeOrigin: true,
+        pathRewrite: {
+          '/unifiedServicesAVS': ''
+        }
+      },
 
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

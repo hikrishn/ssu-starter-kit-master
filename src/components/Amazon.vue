@@ -143,7 +143,7 @@
           <div class="row">
             <!-- angul <button id="{{ctrl.verifyButtonId}}" ng-show="!ctrl.showMessage" class="btn btn-primary btn-xs center-block"" style="margin-top:20px" ng-click=" ctrl.verifyAddress()" data-continue="contact">Save</button><img class="small-orange-spinner" ng-show="ctrl.showSpinner" ng-src="vg-ssu/images/orange-spinner.gif"> -->
             <button id="verifyButtonId" ng-show="!ctrl.showMessage" class="btn btn-primary btn-md center-block"
-             style="margin-top:20px" v-on:click='verifyAddress()' data-continue="contact">Save</button><img
+             style="margin-top:20px" v-on:click='verifyAddress' data-continue="contact">Save</button><img
             class="small-orange-spinner" ng-show="ctrl.showSpinner" ng-src="vg-ssu/images/orange-spinner.gif">
 
           </div>
@@ -165,6 +165,7 @@
 <script>
   import { ErrorBag } from 'vee-validate'
   import ServiceAddress from './ServiceAddress'
+  import { EventBus } from './event-bus'
   // import { UniqueUserNameDirective } from './UniqueUserNameDirective'
   // import VeeValidate from 'vee-validate'
   import axios from 'axios'
@@ -211,25 +212,12 @@
         type: String
       }
     },
-    /* validations: {
-      firstName: {
-        required,
-        minLength: minLength(2),
-        PatternValidator: PatternValidator(/^[a-zA-Z0-9 '.,-]*$/)
-      }
-    }, */
     data () {
       return {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phoneNumber: '',
-        contact: {
-          'firstName': '',
-          'lastName': '',
-          'email': '',
-          'phoneNumber': ''
-        }
+        firstName: this.$store.state.personalinfo.firstName,
+        lastName: this.$store.state.personalinfo.lastName,
+        email: this.$store.state.personalinfo.email,
+        phoneNumber: this.$store.state.personalinfo.phone
       }
     },
     computed: {
@@ -245,6 +233,17 @@
         if (!this.errors.any('scope')) {
           console.log('No errors')
         }
+      },
+      verifyAddress: function (event) {
+        this.$validator.validateAll().then(success => {
+          if (!success) {
+          // handle error
+            console.log('Error!')
+            return
+          }
+        })
+        EventBus.$emit('validate_all')
+        console.log(this.$store.state.personalinfo.terms)
       }
     },
     created: function () {

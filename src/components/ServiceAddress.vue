@@ -34,7 +34,7 @@
           zipCode
         </label>
         <input type="text" id="zipcode" name="zipcode" ng-class="{'input-field-mobile':$root.isMobile}"
-               v-model="zipcode"
+               v-model="zipcode" v-on:input="updatecitystates"
                v-validate="{ rules: { required: true, min:3, max:5 ,regex:/^\d{5}(\-\d{4})?$/ }}"
                maxlength="5" aria-label=" " ng-blur="ctrl.form.zipcode.$dirty=true; ctrl.form.$dirty=true; ctrl.showMessage=false;" class="form-control "/>
         <p v-if="errors.has('zipcode')" class="error">{{ errors.first('zipcode') }}</p>
@@ -44,9 +44,10 @@
         <label ng-class="{'font14':$root.isMobile}" for="city">
           city
         </label>
-        <input type="text" id="city" name="city" ng-class="{'input-field-mobile':$root.isMobile}" auto-complete-city="zipcode"
+        <input type="text" id="city" name="city" ng-class="{'input-field-mobile':$root.isMobile}"
                v-model="city"
-               v-validate="{ rules: { required: true, min:3, max:50 ,regex:/^[\sA-Za-z]+$/  }}"
+               :value="city"
+               v-validate="{ rules: { required: true, min:3, max:50 ,regex:/^[\sA-Za-z]+$/}}"
                required minlength="3" maxlength="50" ng-blur="ctrl.form.city.$dirty=true; ctrl.form.$dirty=true; ctrl.showMessage=false;" aria-label=" " class="form-control "/>
         <p v-if="errors.has('city')" class="error">{{ errors.first('city') }}</p>
       </div>
@@ -69,11 +70,16 @@
 
 
     <!-- End ZIP CITY STATE-->
+    {{ $store.state.address.city }}
+    {{ city }}
     <div ng-hide="hideVerifyButton">
       <div class="private-policy b-only" ng-show="!ctrl.showMessage">
 
         <div class="path-178" style="float: left;padding-top:10px;">
-          <input type="checkbox" required class="vg-checkbox " ng-model="acceptTos" id="acceptTos" name="acceptTos" ng-change="setTos()">
+          <input type="checkbox" v-model="terms"
+                 v-validate="'required'"
+                 class="vg-checkbox " ng-model="acceptTos" id="acceptTos" name="terms" ng-change="setTos()"/>
+          <p class="help is-danger" v-show="errors.has('terms')">{{ errors.first('terms') }}</p>
         </div>
 
         <div class="i-have-read-and-acce" style="text-align: left;vertical-align: middle;font-size: 15px;padding-top:10px;padding-left:19px;"><span> I have read and accept the <a target="_blank" href="https://business.vonage.com/terms/" message="trialtermslink">terms</a>, <a href="https://business.vonage.com/e911/" target="_blank" message="trial911link">911</a> and <a href="http://business.vonage.com/privacy-policy" target="_blank" message="trialprivacylink">privacy</a>.
@@ -96,6 +102,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import * as types from '../store/mutation-types'
+  import { EventBus } from './event-bus'
   export default {
     directives: {
     },
@@ -107,12 +115,13 @@
     },
     data () {
       return {
-        address1: '',
-        address2: '',
-        city: '',
-        province: '',
-        zipcode: '',
-        countryCode: 'US'
+        address1: this.$store.state.address.address1,
+        address2: this.$store.state.address.address2,
+        city: this.$store.state.address.city,
+        province: this.$store.state.address.province,
+        zipcode: this.$store.state.address.zipcode,
+        countryCode: this.$store.state.address.countryCode,
+        terms: this.$store.state.address.terms
       }
     },
     computed: mapGetters([
@@ -128,9 +137,16 @@
         if (!this.errors.any('scope')) {
           console.log('No errors')
         }
+      },
+      updatecitystates: function (event) {
+        this.$store.commit(types.UPDATE_CITY_STATE, event.target.value)
       }
     },
     created: function () {
+      var vm = this
+      EventBus.$on('validate_all', function () {
+        vm.$validator.validateAll()
+      })
     },
     watch: {
 

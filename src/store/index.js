@@ -5,6 +5,8 @@ import * as getters from './getters'
 import cart from './modules/cart'
 import products from './modules/products'
 import provinces from './modules/provinces'
+import personalinfo from './modules/personalinfo'
+import address from './modules/address'
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -15,7 +17,9 @@ export default new Vuex.Store({
   modules: {
     cart,
     products,
-    provinces
+    provinces,
+    personalinfo,
+    address
   },
   strict: debug
 })

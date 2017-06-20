@@ -52,7 +52,8 @@ Vue.use(VueRouter)
 Vue.use(VueLodash, lodash)
 Vue.use(Vuelidate)
 Vue.use(VeeValidate)
-
+const bus = new Vue()
+export default bus
 VeeValidate.Validator.extend('phonepattern', {
   getMessage: field => 'PhoneNumber needs to be a minimum length of 10!',
 // Returns a boolean value
