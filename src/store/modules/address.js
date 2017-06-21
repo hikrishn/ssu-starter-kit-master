@@ -1,5 +1,6 @@
 import postalCodeLookupService from '../api/postalCodeLookupService'
 import * as types from '../mutation-types'
+import addressValidationService from '../api/addressValidationService'
 // initial state
 const state = {
   address1: '',
@@ -8,7 +9,9 @@ const state = {
   province: '',
   zipcode: '',
   countryCode: 'US',
-  terms: null
+  terms: null,
+  showModal: false,
+  suggestions: []
 }
 
 // getters
@@ -41,6 +44,51 @@ const actions = {
   updateTerms ({commit}, value) {
     console.log('in updateTerms action' + value)
     commit(types.UPDATE_TERMS, value)
+  },
+  updateShowModal ({commit}, value) {
+    console.log('in updateShowModal action' + value)
+    commit(types.UPDATE_SHOWMODAL, value)
+  },
+  checkSuggestions ({commit}, value) {
+    console.log('in updateShowModal action' + value)
+
+    addressValidationService.validate(value).then(function (response) {
+      let noSuggestions = 'We are unable to verify this address.  Please check the spelling and use of abbreviations and try again.'
+      let oneSuggestions = 'Please confirm that the address below is correct'
+      let multipleSuggestion = 'Please confirm which address below is correct:'
+      if (response.valid) {
+        // localStorageService.set('e911', self.addressInfo)
+        // this.onConfirm(); Proceed to OrderConfirmation
+      } else {
+        var suggestions = ''
+        var message = ''
+        var showMessage = false
+        if (response.suggestions.length === 0) {
+          suggestions = response.suggestions
+          message = noSuggestions
+          showMessage = true
+          // $scope.showMessage = true
+        } else {
+          suggestions = response.suggestions
+          if (response.suggestions.length === 1) {
+            message = oneSuggestions
+            showMessage = true
+            showMessage = true
+          } else {
+            message = multipleSuggestion
+            showMessage = true
+            showMessage = true
+          }
+        }
+        console.log('suggestions' + suggestions)
+        console.log('message' + message)
+        console.log('showMessage' + showMessage)
+        commit(types.UPDATE_SUGGESTIONS, {suggestions})
+        // this.$data.showModal = true
+        commit(types.UPDATE_SHOWMODAL, true)
+        // console.log('showModal' + this.showModal)
+      }
+    })
   },
   [types.SET_CITY_STATE] ({commit}, value) {
     console.log('in set City State action' + value)
@@ -84,6 +132,14 @@ const mutations = {
   [types.UPDATE_TERMS] (state, value) {
     console.log('update UPDATE_TERMS' + value)
     state.terms = value
+  },
+  [types.UPDATE_SHOWMODAL] (state, value) {
+    console.log('update UPDATE_SHOWMODAL 1' + value)
+    state.showModal = value
+  },
+  [types.UPDATE_SUGGESTIONS] (state, {suggestions}) {
+    console.log('update UPDATE_SUGGESTIONS 1' + suggestions)
+    state.suggestions = suggestions
   }
 }
 

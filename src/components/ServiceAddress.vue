@@ -69,8 +69,7 @@
 
 
     <!-- End ZIP CITY STATE-->
-    {{ $store.state.address.city }}
-    {{ city }}
+
     <div ng-hide="hideVerifyButton">
       <div class="private-policy b-only" ng-show="!ctrl.showMessage">
 
@@ -104,6 +103,9 @@
   import * as types from '../store/mutation-types'
   import { EventBus } from './event-bus'
   export default {
+    inject: {
+      $validator: '$validator'
+    },
     directives: {
     },
     name: 'service-address',

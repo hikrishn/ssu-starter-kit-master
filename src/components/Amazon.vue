@@ -130,7 +130,9 @@
                     </div>
                     <!--<div style="margin-bottom: 20px;" message="e911[warning]"></div> -->
                     <service-address></service-address>
-                    <!-- angul imp <tr-trial-address-directive cancel="cancelEdit"/> -->
+                    <!-- angul imp v-show='showModal' :showModal="showModal" <tr-trial-address-directive cancel="cancelEdit"/> -->
+
+                    <suggest-address  v-show="showModal"></suggest-address>
                     </form>
 
                   </div>
@@ -162,14 +164,19 @@
 
 </template>
 
+
+
 <script>
   import { ErrorBag } from 'vee-validate'
   import ServiceAddress from './ServiceAddress'
+  import SuggestAddress from './SuggestAddress'
   import * as types from '../store/mutation-types'
-  import { EventBus } from './event-bus'
+  // import store from './store/index.js'
+  // import { EventBus } from './event-bus'
   // import { UniqueUserNameDirective } from './UniqueUserNameDirective'
   // import VeeValidate from 'vee-validate'
   import axios from 'axios'
+  // import Vue from 'vue'
   // import emailService from '../store/api/emailService'
   /* VeeValidate.Validator.extend('uniqueemail', {
     getMessage: field => 'Email already exists!',
@@ -206,7 +213,8 @@
     },
     name: 'Amazon',
     components: {
-      ServiceAddress
+      ServiceAddress,
+      SuggestAddress
     },
     props: {
       name: {
@@ -215,13 +223,21 @@
     },
     data () {
       return {
-        /* firstName: this.$store.state.personalinfo.firstName,
+        /* showModal: this.$store.state.address.showModal
+         firstName: this.$store.state.personalinfo.firstName,
         lastName: this.$store.state.personalinfo.lastName,
         email: this.$store.state.personalinfo.email,
         phoneNumber: this.$store.state.personalinfo.phone */
       }
     },
     computed: {
+      showModal: {
+        get () { return this.$store.state.address.showModal },
+        set (value) {
+          console.log('In set of showModal' + value)
+          this.$store.dispatch(types.UPDATE_SHOWMODAL, value)
+        }
+      },
       firstName: {
         get () { return this.$store.state.personalinfo.firstName },
         set (value) {
@@ -264,18 +280,28 @@
         }
       },
       verifyAddress: function (event) {
-        this.$validator.validateAll().then(success => {
-          if (!success) {
-          // handle error
-            console.log('Error!')
-            return
-          }
-        })
-        EventBus.$emit('validate_all')
+        // EventBus.$emit('validate_all')
+        this.$validator.validateAll()
+        if (!this.errors.any()) {
+          // Do Sumbit
+          console.log('no errors exists')
+          this.validateAddress()
+        }
+
         console.log('terms' + this.$store.state.address.terms)
         console.log('fname' + this.$store.state.personalinfo.firstName)
         console.log('lname' + this.$store.state.personalinfo.lastName)
         console.log('address1' + this.$store.state.address.address1)
+      },
+      validateAddress: function ($store) {
+        var address = {
+          addressLine1: this.$store.state.address.address1,
+          addressLine2: this.$store.state.address.address2,
+          city: this.$store.state.address.city,
+          province: this.$store.state.address.province,
+          postalCode: this.$store.state.address.zipcode
+        }
+        this.$store.dispatch('checkSuggestions', address)
       }
     },
     created: function () {
@@ -285,6 +311,7 @@
 
     }
   }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

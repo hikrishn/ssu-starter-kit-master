@@ -32,6 +32,7 @@ const Amazon = resolve => {
 const Profile = resolve => require(['./components/Profile.vue'], resolve)
 const Contact = resolve => require(['./components/Contact.vue'], resolve)
 const Products = resolve => require(['./components/ProductList.vue'], resolve)
+const Confirmation = resolve => require(['./components/Confirmation.vue'], resolve)
 const NotFound = resolve => require(['./NotFound.vue'], resolve)
 
 const router = new VueRouter({
@@ -43,6 +44,7 @@ const router = new VueRouter({
     {path: '/amazon', component: Amazon},
     {path: '/profile/:username', component: Profile},
     {path: '/products', component: Products},
+    {path: '/confirmation', component: Confirmation},
     {path: '/', redirect: '/about'},
     {path: '*', component: NotFound}
   ]
@@ -116,6 +118,9 @@ VeeValidate.Validator.extend('uniqueemail', {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data: {
+
+  },
   store,
   render: h => h(App),
   router
